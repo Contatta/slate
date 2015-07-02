@@ -137,6 +137,10 @@ The following events are sent and received over the real-time API</p>
 <td><a href="#ack-event">ack</a></td>
 <td>response from the server to acknowledge an event sent by a client</td>
 </tr>
+<tr>
+<td><a href="#ping-event">ping</a></td>
+<td>send a ping to the server</td>
+</tr>
 </tbody></table>
 
 <h3 id="auth-event">auth event</h3>
@@ -192,7 +196,7 @@ user or team. The <code class="prettyprint">to</code> property identifies the de
 </span></code></pre>
 
 <p>The <code class="prettyprint">presence_change</code> event is sent by the client to indicate a user&rsquo;s change of
-availability. Clients which receive this event can update the status of their
+availability. Clients which receive this event can update the status in their
 local list of users. The <code class="prettyprint">to</code> property is either directed to the user or to a
 team JID</p>
 
@@ -234,7 +238,7 @@ received.</p>
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"id"</span><span class="p">:</span><span class="w">   </span><span class="mi">1</span><span class="w">
+  </span><span class="nt">"id"</span><span class="p">:</span><span class="w">   </span><span class="s2">"23TplPdS"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -242,8 +246,9 @@ received.</p>
 <p>Server → Client: in response to the previous event</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"type"</span><span class="p">:</span><span class="w">     </span><span class="s2">"ack"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"reply_to"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w">       </span><span class="s2">"ack"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"reply_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"reply_to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"23TplPdS"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -256,8 +261,36 @@ Not all events require an <code>ack</code>. An event such as
 <code>user_typing</code> can fail and there is no resulting data loss.
 </aside>
 
-<p><code class="prettyprint">id</code> should be a string or number; any other value is considered an error. It is
-recommended that the <code class="prettyprint">id</code> is either an incrementing number or a UUID.</p>
+<p><code class="prettyprint">id</code> should be a unique string or incrementing number; any other value is
+considered an error.</p>
+
+<h3 id="ping-event">ping event</h3>
+
+<blockquote>
+<p>Client → Server</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ping"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"id"</span><span class="p">:</span><span class="w">   </span><span class="s2">"23TplPdS"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Server → Client</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w">       </span><span class="s2">"ack"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"reply_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ping"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"reply_to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"23TplPdS"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The <code class="prettyprint">ping</code> event is sent by the client to check the health of the connection and
+server.</p>
+
+<aside class="notice">
+The `id` property should be included to receive an `ack` from the server.
+</aside>
 
           <h1 id="errors">Errors</h1>
 
