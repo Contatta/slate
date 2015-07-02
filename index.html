@@ -106,10 +106,9 @@ follows</p>
 <p>The Chat APIs allow you to integrate and build applications to extend Ryver&rsquo;s
 base functionality.</p>
 
-<h2 id="events">Events</h2>
+<h2 id="messages">Messages</h2>
 
-<p>Events are sent and received over the real-time messaging API.
-The following events are sent and received over the real-time API</p>
+<p>Messages are sent and received over the real-time messaging API.</p>
 
 <table><thead>
 <tr>
@@ -118,32 +117,32 @@ The following events are sent and received over the real-time API</p>
 </tr>
 </thead><tbody>
 <tr>
-<td><a href="#auth-event">auth</a></td>
+<td><a href="#auth-message">auth</a></td>
 <td>authenticate a new websocket</td>
 </tr>
 <tr>
-<td><a href="#message-event">message</a></td>
-<td>represents a message sent to a user or team</td>
+<td><a href="#chat-message">chat</a></td>
+<td>represents a chat sent to a user or team</td>
 </tr>
 <tr>
-<td><a href="#presence_change-event">presence_change</a></td>
+<td><a href="#presence_change-message">presence_change</a></td>
 <td>indicates a change in presence</td>
 </tr>
 <tr>
-<td><a href="#user_typing-event">user_typing</a></td>
+<td><a href="#user_typing-message">user_typing</a></td>
 <td>indicates a user is typing</td>
 </tr>
 <tr>
-<td><a href="#ack-event">ack</a></td>
-<td>response from the server to acknowledge an event sent by a client</td>
+<td><a href="#ack-message">ack</a></td>
+<td>response from the server to acknowledge an message sent by a client</td>
 </tr>
 <tr>
-<td><a href="#ping-event">ping</a></td>
+<td><a href="#ping-message">ping</a></td>
 <td>send a ping to the server</td>
 </tr>
 </tbody></table>
 
-<h3 id="auth-event">auth event</h3>
+<h3 id="auth-message">auth message</h3>
 
 <blockquote>
 <p>Client → Server: authenticating with server</p>
@@ -154,26 +153,27 @@ The following events are sent and received over the real-time API</p>
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>The <code class="prettyprint">auth</code> event is sent by the client to establish an authenticated connection
-with the server. The <code class="prettyprint">&lt;session id&gt;</code> is obtained when calling <code class="prettyprint">Session.Login()</code></p>
+<p>The <code class="prettyprint">auth</code> message is sent by the client to establish an authenticated
+connection with the server. The <code class="prettyprint">&lt;session id&gt;</code> is obtained when calling
+<code class="prettyprint">Session.Login()</code></p>
 
-<h3 id="message-event">message event</h3>
+<h3 id="chat-message">chat message</h3>
 
 <blockquote>
-<p>Server → Client: a typical message sent to a client</p>
+<p>Server → Client: a typical chat message sent to a client</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chat"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"acme+edc02251076b4190830f30f48eff8266@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>The <code class="prettyprint">message</code> event is sent by a client and delivered to the the appropriate
-user or team. The <code class="prettyprint">to</code> property identifies the destination of the message.</p>
+<p>The <code class="prettyprint">chat</code> message is sent by a client and delivered to the the appropriate user
+or team. The <code class="prettyprint">to</code> property identifies the destination of the message.</p>
 
-<h3 id="presence_change-event">presence_change event</h3>
+<h3 id="presence_change-message">presence_change message</h3>
 
 <blockquote>
 <p>Client → Server: a global presence change</p>
@@ -195,12 +195,12 @@ user or team. The <code class="prettyprint">to</code> property identifies the de
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>The <code class="prettyprint">presence_change</code> event is sent by the client to indicate a user&rsquo;s change of
-availability. Clients which receive this event can update the status in their
-local list of users. The <code class="prettyprint">to</code> property is either directed to the user or to a
-team JID</p>
+<p>The <code class="prettyprint">presence_change</code> message is sent by the client to indicate a user&rsquo;s change
+of availability. Clients which receive this message can update the status in
+their local list of users. The <code class="prettyprint">to</code> property is either directed to the user or
+to a team JID</p>
 
-<h3 id="user_typing-event">user_typing event</h3>
+<h3 id="user_typing-message">user_typing message</h3>
 
 <blockquote>
 <p>Client → Server: indicating the user is typing</p>
@@ -221,15 +221,15 @@ team JID</p>
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>The <code class="prettyprint">user_typing</code> event is sent by the client when a user starts typing. A
-client can send this event multiple times. The <code class="prettyprint">to</code> JID indicates to which user
+<p>The <code class="prettyprint">user_typing</code> message is sent by the client when a user starts typing. A
+client can send this message multiple times. The <code class="prettyprint">to</code> JID indicates to which user
 or team the users is typing</p>
 
 <p>Clients receiving this message can show an indicator that the user is typing.
 The client would remove this indicator after a short delay or when a message is
 received.</p>
 
-<h3 id="ack-event">ack event</h3>
+<h3 id="ack-message">ack message</h3>
 
 <blockquote>
 <p>Client → Server</p>
@@ -243,7 +243,7 @@ received.</p>
 </span></code></pre>
 
 <blockquote>
-<p>Server → Client: in response to the previous event</p>
+<p>Server → Client: in response to the previous message</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w">       </span><span class="s2">"ack"</span><span class="p">,</span><span class="w">
@@ -252,19 +252,19 @@ received.</p>
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>The <code class="prettyprint">ack</code> event is sent by the server to acknowledge a previous event sent by a
+<p>The <code class="prettyprint">ack</code> message is sent by the server to acknowledge a previous message sent by a
 client. A client requests interest in receiving an <code class="prettyprint">ack</code> by including an <code class="prettyprint">id</code>
 property.</p>
 
 <aside class="notice">
-Not all events require an <code>ack</code>. An event such as
+Not all messages require an <code>ack</code>. An message such as
 <code>user_typing</code> can fail and there is no resulting data loss.
 </aside>
 
 <p><code class="prettyprint">id</code> should be a unique string or incrementing number; any other value is
 considered an error.</p>
 
-<h3 id="ping-event">ping event</h3>
+<h3 id="ping-message">ping message</h3>
 
 <blockquote>
 <p>Client → Server</p>
@@ -285,7 +285,7 @@ considered an error.</p>
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>The <code class="prettyprint">ping</code> event is sent by the client to check the health of the connection and
+<p>The <code class="prettyprint">ping</code> message is sent by the client to check the health of the connection and
 server.</p>
 
 <aside class="notice">
