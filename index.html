@@ -234,7 +234,7 @@ received.</p>
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+  </span><span class="nt">"id"</span><span class="p">:</span><span class="w">   </span><span class="mi">1</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -249,10 +249,12 @@ received.</p>
 
 <p>The <code class="prettyprint">ack</code> event is sent by the server to acknowledge a previous event sent by a
 client. A client requests interest in receiving an <code class="prettyprint">ack</code> by including an <code class="prettyprint">id</code>
-property in an event. Not all events require an <code class="prettyprint">ack</code>, such as <code class="prettyprint">user_typing</code>,
-given a failed delivery will not cause data loss. If a <code class="prettyprint">message</code> event fails,
-the client would attempt to retry sending the message or display an alert to
-the user.</p>
+property.</p>
+
+<aside class="notice">
+Not all events require an `ack`, such as `user_typing`, given a failed
+delivery will not cause data loss.
+</aside>
 
 <p><code class="prettyprint">id</code> should be a string or number; any other value is considered an error. It is
 recommended that the <code class="prettyprint">id</code> is either an incrementing number or a UUID.</p>
