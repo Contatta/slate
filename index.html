@@ -30,7 +30,6 @@
       </div>
         <ul class="toc-footer">
             <li><a href='#'>Sign Up for a Developer Key</a></li>
-            <li><a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a></li>
         </ul>
     </div>
     <div class="page-wrapper">
@@ -61,10 +60,6 @@ http://host/path/odata.svc/users(1)?$top=2&$orderby=Name
 
 <h1 id="authentication">Authentication</h1>
 
-<p>A consumer must first authenticate with the Ryver API using HTTP Basic
-authentication over <a href="http://en.wikipedia.org/wiki/HTTP_Secure">HTTPS</a>, by
-calling the <code class="prettyprint">/api/1/odata.svc/Session.Login()</code> API.</p>
-
 <blockquote>
 <p>To authenticate using curl:</p>
 </blockquote>
@@ -83,6 +78,10 @@ calling the <code class="prettyprint">/api/1/odata.svc/Session.Login()</code> AP
   </span><span class="nt">"__descriptor"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Stuart Carnie"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
+
+<p>A consumer must first authenticate with the Ryver API using HTTP Basic
+authentication over <a href="http://en.wikipedia.org/wiki/HTTP_Secure">HTTPS</a>, by
+calling the <code class="prettyprint">/api/1/odata.svc/Session.Login()</code> API.</p>
 
 <aside class="notice">
 Upon successful verification of credentials, the server will respond with
@@ -109,7 +108,8 @@ base functionality.</p>
 
 <h2 id="events">Events</h2>
 
-<p>The following events are sent and received over the real-time API</p>
+<p>Events are sent and received over the real-time messaging API.
+The following events are sent and received over the real-time API</p>
 
 <table><thead>
 <tr>
@@ -122,12 +122,20 @@ base functionality.</p>
 <td>authenticate a new websocket</td>
 </tr>
 <tr>
+<td><a href="#message-event">message</a></td>
+<td>represents a message sent to a user or team</td>
+</tr>
+<tr>
 <td><a href="#presence_change-event">presence_change</a></td>
 <td>indicates a change in presence</td>
 </tr>
 <tr>
 <td><a href="#user_typing-event">user_typing</a></td>
 <td>indicates a user is typing</td>
+</tr>
+<tr>
+<td><a href="#ack-event">ack</a></td>
+<td>response from the server to acknowledge an event sent by a client</td>
 </tr>
 </tbody></table>
 
@@ -145,13 +153,29 @@ base functionality.</p>
 <p>The <code class="prettyprint">auth</code> event is sent by the client to establish an authenticated connection
 with the server. The <code class="prettyprint">&lt;session id&gt;</code> is obtained when calling <code class="prettyprint">Session.Login()</code></p>
 
+<h3 id="message-event">message event</h3>
+
+<blockquote>
+<p>Server → Client: a typical message sent to a client</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"acme+edc02251076b4190830f30f48eff8266@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The <code class="prettyprint">message</code> event is sent by a client and delivered to the the appropriate
+user or team. The <code class="prettyprint">to</code> property identifies the destination of the message.</p>
+
 <h3 id="presence_change-event">presence_change event</h3>
 
 <blockquote>
-<p>Client → Server: when changing presence globally</p>
+<p>Client → Server: a global presence change</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w">     </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"presence"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(available|away|unavailable)"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
@@ -160,9 +184,9 @@ with the server. The <code class="prettyprint">&lt;session id&gt;</code> is obta
 <p>Server → Client: notify clients of presence change</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"acme+edc02251076b4190830f30f48eff8266@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"&lt;JID&gt;"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w">     </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"from"</span><span class="p">:</span><span class="w">     </span><span class="s2">"acme+edc02251076b4190830f30f48eff8266@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">       </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"presence"</span><span class="p">:</span><span class="w"> </span><span class="s2">"away"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
@@ -179,7 +203,7 @@ team JID</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_typing"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;JID&gt;"</span><span class="w">
+  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -189,7 +213,7 @@ team JID</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_typing"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"acme+edc02251076b4190830f30f48eff8266@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"&lt;JID&gt;"</span><span class="w">
+  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -199,7 +223,39 @@ or team the users is typing</p>
 
 <p>Clients receiving this message can show an indicator that the user is typing.
 The client would remove this indicator after a short delay or when a message is
-received.  </p>
+received.</p>
+
+<h3 id="ack-event">ack event</h3>
+
+<blockquote>
+<p>Client → Server</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Server → Client: in response to the previous event</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w">     </span><span class="s2">"ack"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"reply_to"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The <code class="prettyprint">ack</code> event is sent by the server to acknowledge a previous event sent by a
+client. A client requests interest in receiving an <code class="prettyprint">ack</code> by including an <code class="prettyprint">id</code>
+property in an event. Not all events require an <code class="prettyprint">ack</code>, such as <code class="prettyprint">user_typing</code>,
+given a failed delivery will not cause data loss. If a <code class="prettyprint">message</code> event fails,
+the client would attempt to retry sending the message or display an alert to
+the user.</p>
+
+<p><code class="prettyprint">id</code> should be a string or number; any other value is considered an error. It is
+recommended that the <code class="prettyprint">id</code> is either an incrementing number or a UUID.</p>
 
           <h1 id="errors">Errors</h1>
 
