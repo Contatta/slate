@@ -134,7 +134,7 @@ base functionality.</p>
 <h3 id="auth-event">auth event</h3>
 
 <blockquote>
-<p>Client: authenticating with server</p>
+<p>Client → Server: authenticating with server</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auth"</span><span class="p">,</span><span class="w">
@@ -148,7 +148,7 @@ with the server. The <session id> is obtained when calling <code class="prettypr
 <h3 id="presence_change-event">presence_change event</h3>
 
 <blockquote>
-<p>Client: when changing presence globally</p>
+<p>Client → Server: when changing presence globally</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
@@ -157,7 +157,7 @@ with the server. The <session id> is obtained when calling <code class="prettypr
 </span></code></pre>
 
 <blockquote>
-<p>Server: notify clients of presence change</p>
+<p>Server → Client: notify clients of presence change</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
@@ -175,7 +175,7 @@ team JID</p>
 <h3 id="user_typing-event">user_typing event</h3>
 
 <blockquote>
-<p>Client: indicating the user is typing</p>
+<p>Client → Server: indicating the user is typing</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_typing"</span><span class="p">,</span><span class="w">
@@ -184,7 +184,7 @@ team JID</p>
 </span></code></pre>
 
 <blockquote>
-<p>Server: indicating user is typing to a specific JID</p>
+<p>Server → Client: indicating user is typing to a specific JID</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_typing"</span><span class="p">,</span><span class="w">
