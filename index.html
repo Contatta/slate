@@ -252,8 +252,8 @@ client. A client requests interest in receiving an <code class="prettyprint">ack
 property.</p>
 
 <aside class="notice">
-Not all events require an <code>ack</code>, such as <code>user_typing</code>,
-given a failed delivery will not cause data loss.
+Not all events require an <code>ack</code>. An event such as
+<code>user_typing</code> can fail and there is no resulting data loss.
 </aside>
 
 <p><code class="prettyprint">id</code> should be a string or number; any other value is considered an error. It is
