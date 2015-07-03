@@ -149,6 +149,10 @@ See the <code>ack</code> message for more information.
 <td><a href="#ping-message">ping</a></td>
 <td>send a ping to the server</td>
 </tr>
+<tr>
+<td><a href="#error-message">error</a></td>
+<td>sent by the server in response to an invalid message</td>
+</tr>
 </tbody></table>
 
 <h3 id="auth-message">auth message</h3>
@@ -165,6 +169,8 @@ See the <code>ack</code> message for more information.
 <p>The <code class="prettyprint">auth</code> message is sent by the client to establish an authenticated
 connection with the server. The <code class="prettyprint">&lt;session id&gt;</code> is obtained when calling
 <code class="prettyprint">Session.Login()</code></p>
+
+<h4 id="properties">Properties</h4>
 
 <table><thead>
 <tr>
@@ -209,6 +215,8 @@ connection with the server. The <code class="prettyprint">&lt;session id&gt;</co
 
 <p>The <code class="prettyprint">chat</code> message is sent by a client and delivered to the the appropriate user
 or team. The <code class="prettyprint">to</code> property identifies the destination of the message.</p>
+
+<h4 id="properties">Properties</h4>
 
 <table><thead>
 <tr>
@@ -264,6 +272,8 @@ or team. The <code class="prettyprint">to</code> property identifies the destina
 of availability. Clients which receive this message can update the status in
 their local list of users. The <code class="prettyprint">to</code> property is either directed to the user or
 to a team JID</p>
+
+<h4 id="properties">Properties</h4>
 
 <table><thead>
 <tr>
@@ -373,6 +383,71 @@ server.</p>
 The <code>id</code> property should be included to receive an <code>ack</code>
 from the server.
 </aside>
+
+<h3 id="error-message">error message</h3>
+
+<blockquote>
+<p>Example error message in response to a failed auth message</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"error"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auth_failed"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"authentication failed; invalid session"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Error messages are sent in response to a failed request or invalid message
+payload.</p>
+
+<h4 id="properties">Properties</h4>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center">Req</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">code</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>a code identify the error</td>
+</tr>
+<tr>
+<td><code class="prettyprint">text</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>a descriptive message of the error in English</td>
+</tr>
+</tbody></table>
+
+<h4 id="error-codes">Error codes</h4>
+
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">invalid_arg</code></td>
+<td>the specified argument was missing or invalid</td>
+</tr>
+<tr>
+<td><code class="prettyprint">auth_failed</code></td>
+<td>the attempted <code class="prettyprint">auth</code> message failed</td>
+</tr>
+<tr>
+<td><code class="prettyprint">server_error</code></td>
+<td>a server error occurred</td>
+</tr>
+<tr>
+<td><code class="prettyprint">invalid_message_type</code></td>
+<td>the specified message <code class="prettyprint">type</code> was invalid</td>
+</tr>
+</tbody></table>
 
           <h1 id="errors">Errors</h1>
 
