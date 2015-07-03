@@ -108,7 +108,16 @@ base functionality.</p>
 
 <h2 id="messages">Messages</h2>
 
-<p>Messages are sent and received over the real-time messaging API.</p>
+<p>Messages are sent and received over the real-time messaging API. All messages
+must have a <code class="prettyprint">type</code> property that indicates the type of message and how a
+consumer should interpret the remaining structure. The following table lists
+the standard messages types.</p>
+
+<aside class="info">
+A client can include an <code>id</code> property to request the server send an
+<code>ack</code> message once it has been received and successfully processed.
+See the <code>ack</code> message for more information.
+</aside>
 
 <table><thead>
 <tr>
@@ -118,7 +127,7 @@ base functionality.</p>
 </thead><tbody>
 <tr>
 <td><a href="#auth-message">auth</a></td>
-<td>authenticate a new websocket</td>
+<td>authenticate a new websocket connection</td>
 </tr>
 <tr>
 <td><a href="#chat-message">chat</a></td>
@@ -157,6 +166,34 @@ base functionality.</p>
 connection with the server. The <code class="prettyprint">&lt;session id&gt;</code> is obtained when calling
 <code class="prettyprint">Session.Login()</code></p>
 
+<table><thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center">Req</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">authorization</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td><code class="prettyprint">&quot;Session&quot; SP session-id</code></td>
+</tr>
+<tr>
+<td><code class="prettyprint">agent</code></td>
+<td style="text-align: center"></td>
+<td>string</td>
+<td>Name of application or client</td>
+</tr>
+<tr>
+<td><code class="prettyprint">resource</code></td>
+<td style="text-align: center"></td>
+<td>string</td>
+<td>Unique value to identify the connection</td>
+</tr>
+</tbody></table>
+
 <h3 id="chat-message">chat message</h3>
 
 <blockquote>
@@ -172,6 +209,34 @@ connection with the server. The <code class="prettyprint">&lt;session id&gt;</co
 
 <p>The <code class="prettyprint">chat</code> message is sent by a client and delivered to the the appropriate user
 or team. The <code class="prettyprint">to</code> property identifies the destination of the message.</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center">Req</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">text</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>The text of the message</td>
+</tr>
+<tr>
+<td><code class="prettyprint">to</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>The destination <code class="prettyprint">JID</code> of this message</td>
+</tr>
+<tr>
+<td><code class="prettyprint">extras</code></td>
+<td style="text-align: center"></td>
+<td>object</td>
+<td>Optional extras, that can be used by integrations</td>
+</tr>
+</tbody></table>
 
 <h3 id="presence_change-message">presence_change message</h3>
 
@@ -199,6 +264,22 @@ or team. The <code class="prettyprint">to</code> property identifies the destina
 of availability. Clients which receive this message can update the status in
 their local list of users. The <code class="prettyprint">to</code> property is either directed to the user or
 to a team JID</p>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center">Req</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">presence</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td><code class="prettyprint">&quot;available&quot; / &quot;away&quot; / &quot;unavailable&quot;</code></td>
+</tr>
+</tbody></table>
 
 <h3 id="user_typing-message">user_typing message</h3>
 
