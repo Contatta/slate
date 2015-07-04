@@ -113,11 +113,17 @@ must have a <code class="prettyprint">type</code> property that indicates the ty
 consumer should interpret the remaining structure. The following table lists
 the standard messages types.</p>
 
-<aside class="info">
-A client can include an <code>id</code> property to request the server send an
-<code>ack</code> message once it has been received and successfully processed.
-See the <code>ack</code> message for more information.
-</aside>
+<h3 id="id-property">id property</h3>
+
+<p>A client can include an <code class="prettyprint">id</code> property to request the server send an <code class="prettyprint">ack</code>
+message once it has been received and successfully processed. See the <code class="prettyprint">ack</code>
+message for more information.</p>
+
+<p>The <code class="prettyprint">id</code> property also provides traceability. Should an <code class="prettyprint">error</code> message occur in
+response to a client request, the server will include the original <code class="prettyprint">id</code> with the
+<code class="prettyprint">error</code> message.</p>
+
+<h3 id="message-type-list">message type list</h3>
 
 <table><thead>
 <tr>
@@ -154,6 +160,8 @@ See the <code>ack</code> message for more information.
 <td>sent by the server in response to an invalid message</td>
 </tr>
 </tbody></table>
+
+<h2 id="real-time-message-api">Real-time Message API</h2>
 
 <h3 id="auth-message">auth message</h3>
 
@@ -404,7 +412,7 @@ from the server.
 <p>Error messages are sent in response to a failed request or invalid message
 payload.</p>
 
-<h4 id="properties">Properties</h4>
+<h4 id="properties-error">Properties: error</h4>
 
 <table><thead>
 <tr>
@@ -425,6 +433,12 @@ payload.</p>
 <td style="text-align: center">✓</td>
 <td>string</td>
 <td>a descriptive message of the error in English</td>
+</tr>
+<tr>
+<td><code class="prettyprint">xmpp</code></td>
+<td style="text-align: center"></td>
+<td>object</td>
+<td>additional information for an XMPP-specific error</td>
 </tr>
 </tbody></table>
 
@@ -455,6 +469,48 @@ payload.</p>
 <tr>
 <td><code class="prettyprint">not_authenticated</code></td>
 <td>in an unauthenticated state, only the <code class="prettyprint">auth</code> message is expected</td>
+</tr>
+<tr>
+<td><code class="prettyprint">xmpp_error</code></td>
+<td>an XMPP-specific error has occurred, see <a href="#properties-xmpp">xmpp object</a></td>
+</tr>
+</tbody></table>
+
+<h4 id="properties-xmpp">Properties: xmpp</h4>
+
+<p>The <code class="prettyprint">xmpp</code> property will be populated when <code class="prettyprint">error.code</code> is <code class="prettyprint">xmpp_error</code> and
+is in response to an XMPP error due to a client request.</p>
+
+<aside class="info">
+The <code>xmpp</code> object is intended to be a temporary solution until MUC is
+replaced
+</aside>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center">Req</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">type</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td><code class="prettyprint">type</code> attribute of <code class="prettyprint">error</code> element per <a href="http://tools.ietf.org/html/rfc6120#section-8.3.2">RFC-6120 Section 8.3.2</a></td>
+</tr>
+<tr>
+<td><code class="prettyprint">cond</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>defined condition per <a href="http://tools.ietf.org/html/rfc6120#section-8.3.3">RFC-6120 Section 8.3.3</a></td>
+</tr>
+<tr>
+<td><code class="prettyprint">text</code></td>
+<td style="text-align: center"></td>
+<td>string</td>
+<td><code class="prettyprint">text</code> element per <a href="http://tools.ietf.org/html/rfc6120#section-8.3.2">RFC-6120 Section 8.3.2</a></td>
 </tr>
 </tbody></table>
 
