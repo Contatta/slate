@@ -144,6 +144,14 @@ response to a client request, the server will include the original <code class="
 <td>indicates a change in presence</td>
 </tr>
 <tr>
+<td><a href="#team_join-message">team_join</a></td>
+<td>cause the current session to join the specified team chat room</td>
+</tr>
+<tr>
+<td><a href="#team_leave-message">team_leave</a></td>
+<td>cause the current session to leave the specified team chat room</td>
+</tr>
+<tr>
 <td><a href="#user_typing-message">user_typing</a></td>
 <td>indicates a user is typing</td>
 </tr>
@@ -303,6 +311,46 @@ announce a user&rsquo;s availability or they will not be seen as online to other
 <td><code class="prettyprint">&quot;available&quot; / &quot;away&quot; / &quot;unavailable&quot;</code></td>
 </tr>
 </tbody></table>
+
+<h3 id="team_join-message">team_join message</h3>
+
+<blockquote>
+<p>Client → Server: join the room</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"team_join"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The <code class="prettyprint">team_join</code> message is sent by the client when a user wishes to participate
+in chat the room. 1 or more <code class="prettyprint">presence_change</code> messages will be sent to the user,
+indicating who is currently in the room.</p>
+
+<p>Whilst joined to a room, the current session will receive any group chat
+messages directed to the room.</p>
+
+<p>TODO: add <code class="prettyprint">read_jid</code> to presence to show real JIDs of users</p>
+
+<h3 id="team_leave-message">team_leave message</h3>
+
+<blockquote>
+<p>Client → Server: leave the room</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"team_leave"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The <code class="prettyprint">team_leave</code> message is sent by the client when a user no longer wishes to
+participate in chat the room. All other clients will be sent a <code class="prettyprint">presence_change</code>
+message with a <code class="prettyprint">presence</code> of <code class="prettyprint">unavailable</code>.</p>
+
+<p>After leaving, the current session will no longer receive any group chat
+messages directed to the room.</p>
+
+<p>TODO: add <code class="prettyprint">read_jid</code> to presence to show real JIDs of users</p>
 
 <h3 id="user_typing-message">user_typing message</h3>
 
@@ -479,7 +527,7 @@ payload.</p>
 <h4 id="properties-xmpp">Properties: xmpp</h4>
 
 <p>The <code class="prettyprint">xmpp</code> property will be populated when <code class="prettyprint">error.code</code> is <code class="prettyprint">xmpp_error</code> and
-is in response to an XMPP error due to a client request.</p>
+is will include details of the XMPP error per RFC-6120.</p>
 
 <aside class="info">
 The <code>xmpp</code> object is intended to be a temporary solution until MUC is
