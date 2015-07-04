@@ -324,7 +324,7 @@ announce a user&rsquo;s availability or they will not be seen as online to other
 </span></code></pre>
 
 <p>The <code class="prettyprint">team_join</code> message is sent by the client when a user wishes to participate
-in chat the room. 1 or more <code class="prettyprint">presence_change</code> messages will be sent to the user,
+in the chat room. 1 or more <code class="prettyprint">presence_change</code> messages will be sent to the user,
 indicating who is currently in the room.</p>
 
 <p>Whilst joined to a room, the current session will receive any group chat
@@ -344,7 +344,7 @@ messages directed to the room.</p>
 </span></code></pre>
 
 <p>The <code class="prettyprint">team_leave</code> message is sent by the client when a user no longer wishes to
-participate in chat the room. All other clients will be sent a <code class="prettyprint">presence_change</code>
+participate in the chat room. All other clients will be sent a <code class="prettyprint">presence_change</code>
 message with a <code class="prettyprint">presence</code> of <code class="prettyprint">unavailable</code>.</p>
 
 <p>After leaving, the current session will no longer receive any group chat
