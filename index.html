@@ -253,7 +253,7 @@ or team. The <code class="prettyprint">to</code> property identifies the destina
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w">     </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"presence"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(available|away|unavailable)"</span><span class="w">
+  </span><span class="nt">"presence"</span><span class="p">:</span><span class="w"> </span><span class="s2">"away"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -272,6 +272,11 @@ or team. The <code class="prettyprint">to</code> property identifies the destina
 of availability. Clients which receive this message can update the status in
 their local list of users. The <code class="prettyprint">to</code> property is either directed to the user or
 to a team JID</p>
+
+<aside class="info">
+You must send an initial presence after the <code>auth</code> message to announce a
+user&rsquo;s availability or they will not be seen as online to other users
+</aside>
 
 <h4 id="properties">Properties</h4>
 
@@ -446,6 +451,10 @@ payload.</p>
 <tr>
 <td><code class="prettyprint">invalid_message_type</code></td>
 <td>the specified message <code class="prettyprint">type</code> was invalid</td>
+</tr>
+<tr>
+<td><code class="prettyprint">not_authenticated</code></td>
+<td>in an unauthenticated state, only the <code class="prettyprint">auth</code> message is expected</td>
 </tr>
 </tbody></table>
 
