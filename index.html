@@ -113,7 +113,7 @@ must have a <code class="prettyprint">type</code> property that indicates the ty
 consumer should interpret the remaining structure. The following table lists
 the standard messages types.</p>
 
-<h3 id="id-property">id property</h3>
+<h3 id="id-property"><code class="prettyprint">id</code> property</h3>
 
 <p>A client can include an <code class="prettyprint">id</code> property to request the server send an <code class="prettyprint">ack</code>
 message once it has been received and successfully processed. See the <code class="prettyprint">ack</code>
@@ -122,6 +122,18 @@ message for more information.</p>
 <p>The <code class="prettyprint">id</code> property also provides traceability. Should an <code class="prettyprint">error</code> message occur in
 response to a client request, the server will include the original <code class="prettyprint">id</code> with the
 <code class="prettyprint">error</code> message.</p>
+
+<h3 id="to-property"><code class="prettyprint">to</code> property</h3>
+
+<p>For an incoming message (such as <code class="prettyprint">presence_change</code> or <code class="prettyprint">chat</code>), the <code class="prettyprint">to</code> property
+will contain the JID to which this message was delivered. If the target of the
+message is the current user, it will be the user&rsquo;s JID; if the target was a team
+room, it will be the JID of the team</p>
+
+<h3 id="from-property"><code class="prettyprint">from</code> property</h3>
+
+<p>For an incoming message, the <code class="prettyprint">from</code> property will contain the JID of the
+originating user, whether it was sent directly to the user or to a team room.</p>
 
 <h3 id="message-type-list">message type list</h3>
 
@@ -171,7 +183,7 @@ response to a client request, the server will include the original <code class="
 
 <h2 id="real-time-message-api">Real-time Message API</h2>
 
-<h3 id="auth-message">auth message</h3>
+<h3 id="auth-message"><code class="prettyprint">auth</code> message</h3>
 
 <blockquote>
 <p>Client → Server: authenticating with server</p>
@@ -216,7 +228,7 @@ connection with the server. The <code class="prettyprint">&lt;session id&gt;</co
 </tr>
 </tbody></table>
 
-<h3 id="chat-message">chat message</h3>
+<h3 id="chat-message"><code class="prettyprint">chat</code> message</h3>
 
 <blockquote>
 <p>Server → Client: a typical chat message sent to a client</p>
@@ -230,7 +242,9 @@ connection with the server. The <code class="prettyprint">&lt;session id&gt;</co
 </span></code></pre>
 
 <p>The <code class="prettyprint">chat</code> message is sent by a client and delivered to the the appropriate user
-or team. The <code class="prettyprint">to</code> property identifies the destination of the message.</p>
+or team. The <code class="prettyprint">to</code> property identifies the destination of the message. If <code class="prettyprint">to</code> is
+the current user&rsquo;s JID, it was a 1:1 message, if the JID is a team, it  was
+delivered to a team chat room.</p>
 
 <h4 id="properties">Properties</h4>
 
@@ -262,7 +276,7 @@ or team. The <code class="prettyprint">to</code> property identifies the destina
 </tr>
 </tbody></table>
 
-<h3 id="presence_change-message">presence_change message</h3>
+<h3 id="presence_change-message"><code class="prettyprint">presence_change</code> message</h3>
 
 <blockquote>
 <p>Client → Server: notifying other users of an away presence</p>
@@ -285,9 +299,11 @@ or team. The <code class="prettyprint">to</code> property identifies the destina
 </span></code></pre>
 
 <p>The <code class="prettyprint">presence_change</code> message is sent by the client to indicate a user&rsquo;s change
-of availability. Clients which receive this message can update the status in
-their local list of users. The <code class="prettyprint">to</code> property is either directed to the user or
-to a team JID</p>
+of availability.</p>
+
+<p>Clients which receive this message can update the status in their local list of
+users. The <code class="prettyprint">to</code> property is either directed to the user or to a team JID,
+depending on whether this was a global or team-specific presence change.</p>
 
 <aside class="info">
 You must send an initial presence after the <code>auth</code> message to
@@ -312,7 +328,7 @@ announce a user&rsquo;s availability or they will not be seen as online to other
 </tr>
 </tbody></table>
 
-<h3 id="team_join-message">team_join message</h3>
+<h3 id="team_join-message"><code class="prettyprint">team_join</code> message</h3>
 
 <blockquote>
 <p>Client → Server: join the room</p>
@@ -332,7 +348,7 @@ messages directed to the room.</p>
 
 <p>TODO: always replace room JID with real user&rsquo;s JID</p>
 
-<h3 id="team_leave-message">team_leave message</h3>
+<h3 id="team_leave-message"><code class="prettyprint">team_leave</code> message</h3>
 
 <blockquote>
 <p>Client → Server: leave the room</p>
@@ -352,7 +368,7 @@ messages directed to the room.</p>
 
 <p>TODO: always replace room JID with real user&rsquo;s JID</p>
 
-<h3 id="user_typing-message">user_typing message</h3>
+<h3 id="user_typing-message"><code class="prettyprint">user_typing</code> message</h3>
 
 <blockquote>
 <p>Client → Server: indicating the user is typing</p>
@@ -381,7 +397,7 @@ or team the users is typing</p>
 The client would remove this indicator after a short delay or when a message is
 received.</p>
 
-<h3 id="ack-message">ack message</h3>
+<h3 id="ack-message"><code class="prettyprint">ack</code> message</h3>
 
 <blockquote>
 <p>Client → Server</p>
@@ -416,7 +432,7 @@ Not all messages require an <code>ack</code>. An message such as
 <p><code class="prettyprint">id</code> should be a unique string or incrementing number; any other value is
 considered an error.</p>
 
-<h3 id="ping-message">ping message</h3>
+<h3 id="ping-message"><code class="prettyprint">ping</code> message</h3>
 
 <blockquote>
 <p>Client → Server</p>
@@ -445,7 +461,7 @@ The <code>id</code> property should be included to receive an <code>ack</code>
 from the server.
 </aside>
 
-<h3 id="error-message">error message</h3>
+<h3 id="error-message"><code class="prettyprint">error</code> message</h3>
 
 <blockquote>
 <p>Example error message in response to a failed auth message</p>
@@ -460,7 +476,7 @@ from the server.
 <p>Error messages are sent in response to a failed request or invalid message
 payload.</p>
 
-<h4 id="properties-error">Properties: error</h4>
+<h4 id="properties-error">Properties: <code class="prettyprint">error</code></h4>
 
 <table><thead>
 <tr>
@@ -524,7 +540,7 @@ payload.</p>
 </tr>
 </tbody></table>
 
-<h4 id="properties-xmpp">Properties: xmpp</h4>
+<h4 id="properties-xmpp">Properties: <code class="prettyprint">xmpp</code></h4>
 
 <p>The <code class="prettyprint">xmpp</code> property will be populated when <code class="prettyprint">error.code</code> is <code class="prettyprint">xmpp_error</code> and
 is will include details of the XMPP error per RFC-6120.</p>
