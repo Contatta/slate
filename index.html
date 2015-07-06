@@ -237,7 +237,8 @@ connection with the server. The <code class="prettyprint">&lt;session id&gt;</co
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chat"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"acme+edc02251076b4190830f30f48eff8266@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="w">
+  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"key"</span><span class="p">:</span><span class="w">  </span><span class="s2">"00093971650512420864"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
@@ -267,6 +268,12 @@ delivered to a team chat room.</p>
 <td style="text-align: center">✓</td>
 <td>string</td>
 <td>The destination <code class="prettyprint">JID</code> of this message</td>
+</tr>
+<tr>
+<td><code class="prettyprint">key</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>The unique identifier of this message for editing or deletion</td>
 </tr>
 <tr>
 <td><code class="prettyprint">extras</code></td>
@@ -423,6 +430,11 @@ received.</p>
 <p>The <code class="prettyprint">ack</code> message is sent by the server to acknowledge a previous message sent by a
 client. A client requests interest in receiving an <code class="prettyprint">ack</code> by including an <code class="prettyprint">id</code>
 property.</p>
+
+<p>Certain messages will include a <code class="prettyprint">response</code> property, that contains additional
+data after processing. As an example, sending a <code class="prettyprint">chat</code> message will include the
+original chat with the <code class="prettyprint">key</code> to uniquely identify the message for editing or
+deleting.</p>
 
 <aside class="notice">
 Not all messages require an <code>ack</code>. A message such as
