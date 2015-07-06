@@ -186,7 +186,7 @@ originating user, whether it was sent directly to the user or to a team room.</p
 <h3 id="auth-message"><code class="prettyprint">auth</code> message</h3>
 
 <blockquote>
-<p>Client → Server: authenticating with server</p>
+<p>Client: authenticating with server</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auth"</span><span class="p">,</span><span class="w">
@@ -231,7 +231,7 @@ connection with the server. The <code class="prettyprint">&lt;session id&gt;</co
 <h3 id="chat-message"><code class="prettyprint">chat</code> message</h3>
 
 <blockquote>
-<p>Server → Client: a typical chat message sent to a client</p>
+<p>Server: a typical chat message sent to a client</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chat"</span><span class="p">,</span><span class="w">
@@ -279,7 +279,7 @@ delivered to a team chat room.</p>
 <h3 id="presence_change-message"><code class="prettyprint">presence_change</code> message</h3>
 
 <blockquote>
-<p>Client → Server: notifying other users of an away presence</p>
+<p>Client: notifying other users of an away presence</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w">     </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
@@ -288,7 +288,7 @@ delivered to a team chat room.</p>
 </span></code></pre>
 
 <blockquote>
-<p>Server → Client: notify clients of presence change</p>
+<p>Server: notify clients of presence change</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w">     </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
@@ -331,7 +331,7 @@ announce a user&rsquo;s availability or they will not be seen as online to other
 <h3 id="team_join-message"><code class="prettyprint">team_join</code> message</h3>
 
 <blockquote>
-<p>Client → Server: join the room</p>
+<p>Client: join the room</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"team_join"</span><span class="p">,</span><span class="w">
@@ -351,7 +351,7 @@ messages directed to the room.</p>
 <h3 id="team_leave-message"><code class="prettyprint">team_leave</code> message</h3>
 
 <blockquote>
-<p>Client → Server: leave the room</p>
+<p>Client: leave the room</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"team_leave"</span><span class="p">,</span><span class="w">
@@ -371,7 +371,7 @@ messages directed to the room.</p>
 <h3 id="user_typing-message"><code class="prettyprint">user_typing</code> message</h3>
 
 <blockquote>
-<p>Client → Server: indicating the user is typing</p>
+<p>Client: indicating the user is typing</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_typing"</span><span class="p">,</span><span class="w">
@@ -380,7 +380,7 @@ messages directed to the room.</p>
 </span></code></pre>
 
 <blockquote>
-<p>Server → Client: indicating user is typing to a specific JID</p>
+<p>Server: indicating user is typing to a specific JID</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user_typing"</span><span class="p">,</span><span class="w">
@@ -400,7 +400,7 @@ received.</p>
 <h3 id="ack-message"><code class="prettyprint">ack</code> message</h3>
 
 <blockquote>
-<p>Client → Server</p>
+<p>Client:</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
@@ -411,7 +411,7 @@ received.</p>
 </span></code></pre>
 
 <blockquote>
-<p>Server → Client: in response to the previous message</p>
+<p>Server: in response to the previous message</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w">       </span><span class="s2">"ack"</span><span class="p">,</span><span class="w">
@@ -435,7 +435,7 @@ considered an error.</p>
 <h3 id="ping-message"><code class="prettyprint">ping</code> message</h3>
 
 <blockquote>
-<p>Client → Server</p>
+<p>Client:</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ping"</span><span class="p">,</span><span class="w">
@@ -444,7 +444,7 @@ considered an error.</p>
 </span></code></pre>
 
 <blockquote>
-<p>Server → Client</p>
+<p>Server:</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w">       </span><span class="s2">"ack"</span><span class="p">,</span><span class="w">
