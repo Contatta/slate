@@ -117,7 +117,7 @@ the standard messages types.</p>
 
 <p>When sending a message to the server, a client can include an <code class="prettyprint">id</code> property of
 type <code class="prettyprint">string</code>. In turn, the server will respond with an <a href="#ack-message">ack</a>
-message once it has been received and successfully processed.</p>
+message once it has been successfully processed.</p>
 
 <p>The <code class="prettyprint">id</code> property also provides traceability. Should an <code class="prettyprint">error</code> message occur in
 response to a client request, the server will include the original <code class="prettyprint">id</code> with the
