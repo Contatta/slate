@@ -590,6 +590,49 @@ replaced
 </tr>
 </tbody></table>
 
+          <h1 id="real-time-events">Real-Time Events</h1>
+
+<p>Event messages are sent over the real-time messaging API. These provide an
+additional mechanism to push messages to a client that are not related to chat.
+Events can occur for many reasons such as notifications or data-changes. Event
+messages are identifiable when the incoming message <code class="prettyprint">type</code> is <code class="prettyprint">event</code>.</p>
+
+<aside class="notice">
+Given a client using the XMPP protocol has no use for <code>event</code>
+messages, they are only sent to clients using the JSON / ratatoskr protocol.
+</aside>
+
+<p>Events can be sent to a specific set of users or broadcast to all the users of
+an instance.</p>
+
+<h2 id="properties">Properties</h2>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center">Req</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">topic</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>name of topic as a path, such as <code class="prettyprint">/api/notify</code></td>
+</tr>
+<tr>
+<td><code class="prettyprint">data</code></td>
+<td style="text-align: center">✓</td>
+<td>any</td>
+<td>payload, specific to the topic</td>
+</tr>
+</tbody></table>
+
+<h2 id="topics">Topics</h2>
+
+<p><strong>TBA</strong></p>
+
       </div>
       <div class="dark-box">
       </div>
