@@ -312,8 +312,14 @@ of availability.</p>
 users. The <code class="prettyprint">to</code> property is either directed to the user or to a team JID,
 depending on whether this was a global or team-specific presence change.</p>
 
+<p>When a client sends out an initial presence after connecting, it will receive a
+number of <code class="prettyprint">presence_change</code> messages from the server to indicate the online
+status of all the user&rsquo;s contacts. These initial <code class="prettyprint">presence_change</code> messages will
+include a <code class="prettyprint">received</code> property, indicating when that user last updated their
+presence. When <code class="prettyprint">received</code> is absent, it is implied to be <em>now</em>.</p>
+
 <aside class="info">
-You must send an initial presence after the <code>auth</code> message to
+A client must send an initial presence after the <code>auth</code> message to
 announce a user&rsquo;s availability or they will not be seen as online to other users
 </aside>
 
@@ -332,6 +338,12 @@ announce a user&rsquo;s availability or they will not be seen as online to other
 <td style="text-align: center">✓</td>
 <td>string</td>
 <td>valid presence_type</td>
+</tr>
+<tr>
+<td><code class="prettyprint">received</code></td>
+<td style="text-align: center"></td>
+<td>string</td>
+<td>ISO 8601 formatted date</td>
 </tr>
 </tbody></table>
 
@@ -378,12 +390,10 @@ announce a user&rsquo;s availability or they will not be seen as online to other
 
 <p>The <code class="prettyprint">team_join</code> message is sent by the client when a user wishes to participate
 in the chat room. 1 or more <code class="prettyprint">presence_change</code> messages will be sent to the user,
-indicating who is currently in the room.</p>
-
-<p>Whilst joined to a room, the current session will receive any group chat
-messages directed to the room.</p>
-
-<p>TODO: always replace room JID with real user&rsquo;s JID</p>
+indicating who is currently in the room. Note that the value of the <code class="prettyprint">to</code>
+property for these <code class="prettyprint">presence_change</code> messages will be the team&rsquo;s JID. Whilst
+joined to a room, the current session will receive any group chat messages
+directed to the room.</p>
 
 <h3 id="team_leave-message"><code class="prettyprint">team_leave</code> message</h3>
 
@@ -398,12 +408,8 @@ messages directed to the room.</p>
 
 <p>The <code class="prettyprint">team_leave</code> message is sent by the client when a user no longer wishes to
 participate in the chat room. All other clients will be sent a <code class="prettyprint">presence_change</code>
-message with a <code class="prettyprint">presence</code> of <code class="prettyprint">unavailable</code>.</p>
-
-<p>After leaving, the current session will no longer receive any group chat
-messages directed to the room.</p>
-
-<p>TODO: always replace room JID with real user&rsquo;s JID</p>
+message with a <code class="prettyprint">presence</code> of <code class="prettyprint">unavailable</code>. After leaving, the current session
+will no longer receive any group chat messages directed to the room.</p>
 
 <h3 id="user_typing-message"><code class="prettyprint">user_typing</code> message</h3>
 
