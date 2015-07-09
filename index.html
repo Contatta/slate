@@ -315,8 +315,12 @@ depending on whether this was a global or team-specific presence change.</p>
 <p>When a client sends out an initial presence after connecting, it will receive a
 number of <code class="prettyprint">presence_change</code> messages from the server to indicate the online
 status of all the user&rsquo;s contacts. These initial <code class="prettyprint">presence_change</code> messages will
-include a <code class="prettyprint">received</code> property, indicating when that user last updated their
-presence. When <code class="prettyprint">received</code> is absent, it is implied to be <em>now</em>.</p>
+include a <code class="prettyprint">received</code> property, to indicate when the originating user last
+updated their presence.</p>
+
+<p>During the course of a connection, a client will receive a number of
+<code class="prettyprint">presence_change</code> messages in order to update the online status of their user
+list. In this case, <code class="prettyprint">received</code> will be absent, as it is implied to be <em>now</em>.</p>
 
 <aside class="info">
 A client must send an initial presence after the <code>auth</code> message to
