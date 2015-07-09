@@ -308,6 +308,11 @@ delivered to a team chat room.</p>
 <p>The <code class="prettyprint">presence_change</code> message is sent by the client to indicate a user&rsquo;s change
 of availability.</p>
 
+<aside class="notice">
+A client must send an initial presence after the <code>auth</code> message to
+announce a user&rsquo;s availability or they will not be seen as online to other users
+</aside>
+
 <p>Clients which receive this message can update the status in their local list of
 users. The <code class="prettyprint">to</code> property is either directed to the user or to a team JID,
 depending on whether this was a global or team-specific presence change.</p>
@@ -318,13 +323,10 @@ status of all the user&rsquo;s contacts. These initial <code class="prettyprint"
 include a <code class="prettyprint">received</code> property, to indicate when the originating user last
 updated their presence.</p>
 
-<p>During the course of a connection, a client will receive a number of
-<code class="prettyprint">presence_change</code> messages in order to update the online status of their user
-list. In this case, <code class="prettyprint">received</code> will be absent, as it is implied to be <em>now</em>.</p>
-
-<aside class="info">
-A client must send an initial presence after the <code>auth</code> message to
-announce a user&rsquo;s availability or they will not be seen as online to other users
+<aside class="notice">
+Whilst connected, a client will receive a number of <code>presence_change</code>
+messages that it can use to update the online status of their user list. In this
+case, <code>received</code> will be absent, as it is implied to be <em>now</em>.
 </aside>
 
 <h4 id="properties">Properties</h4>
@@ -597,7 +599,7 @@ payload.</p>
 <p>The <code class="prettyprint">xmpp</code> property will be populated when <code class="prettyprint">error.code</code> is <code class="prettyprint">xmpp_error</code> and
 is will include details of the XMPP error per RFC-6120.</p>
 
-<aside class="info">
+<aside class="notice">
 The <code>xmpp</code> object is intended to be a temporary solution until MUC is
 replaced
 </aside>
