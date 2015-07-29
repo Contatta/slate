@@ -135,6 +135,14 @@ room, it will be the JID of the team</p>
 <p>For an incoming message, the <code class="prettyprint">from</code> property will contain the JID of the
 originating user.</p>
 
+<h3 id="jid"><code class="prettyprint">JID</code></h3>
+
+<p>A JID is a unique identifier for a user or team in Ryver and is used to route
+messages. In general a JID takes the form <code class="prettyprint">localpart@domainpart</code>, and is known
+as a <em>bare JID</em>. A particular connected application that is currently authorized
+to send and receive messages is of the form <code class="prettyprint">localpart@domainpart/resource</code> and
+is known as a <em>full JID</em>.</p>
+
 <h3 id="message-type-list">message type list</h3>
 
 <table><thead>
@@ -144,12 +152,24 @@ originating user.</p>
 </tr>
 </thead><tbody>
 <tr>
+<td><a href="#ack-message">ack</a></td>
+<td>response from the server to acknowledge a message sent by a client</td>
+</tr>
+<tr>
 <td><a href="#auth-message">auth</a></td>
 <td>authenticate a new websocket connection</td>
 </tr>
 <tr>
 <td><a href="#chat-message">chat</a></td>
 <td>represents a chat sent to a user or team</td>
+</tr>
+<tr>
+<td><a href="#error-message">error</a></td>
+<td>sent by the server in response to an invalid message</td>
+</tr>
+<tr>
+<td><a href="#ping-message">ping</a></td>
+<td>send a ping to the server</td>
 </tr>
 <tr>
 <td><a href="#presence_change-message">presence_change</a></td>
@@ -167,21 +187,87 @@ originating user.</p>
 <td><a href="#user_typing-message">user_typing</a></td>
 <td>indicates a user is typing</td>
 </tr>
-<tr>
-<td><a href="#ack-message">ack</a></td>
-<td>response from the server to acknowledge a message sent by a client</td>
-</tr>
-<tr>
-<td><a href="#ping-message">ping</a></td>
-<td>send a ping to the server</td>
-</tr>
-<tr>
-<td><a href="#error-message">error</a></td>
-<td>sent by the server in response to an invalid message</td>
-</tr>
 </tbody></table>
 
 <h2 id="real-time-message-api">Real-time Message API</h2>
+
+<h3 id="ack-message"><code class="prettyprint">ack</code> message</h3>
+
+<blockquote>
+<p>Client:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"id"</span><span class="p">:</span><span class="w">   </span><span class="s2">"23TplPdS"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Server: in response to the previous message</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w">       </span><span class="s2">"ack"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"reply_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"reply_to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"23TplPdS"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The <code class="prettyprint">ack</code> message is sent by the server to acknowledge a previous message sent
+by a client. A client requests interest in receiving an <code class="prettyprint">ack</code> by including an
+<code class="prettyprint">id</code> property in an outgoing message. <code class="prettyprint">id</code> should be a unique string or
+incrementing number; any other value is considered an error.</p>
+
+<p>On success, certain messages will include a <code class="prettyprint">response</code> property, that contains
+additional data after processing. As an example, sending a <code class="prettyprint">chat</code> message will
+include the original chat with a <code class="prettyprint">key</code> to uniquely identify the message for
+editing or deleting. See each message to determine if a response is returned.</p>
+
+<p>On failure, the message will include an <code class="prettyprint">error</code> property that contains
+information about the cause of the failure.</p>
+
+<aside class="notice">
+Not all messages require an <code>ack</code>. An ack should be requested for
+messages that would result in data loss should they fail to be processed
+correctly
+</aside>
+
+<h4 id="properties">Properties</h4>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center">Req</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">reply_type</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>The message type of the original message</td>
+</tr>
+<tr>
+<td><code class="prettyprint">reply_id</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>The id of the original message</td>
+</tr>
+<tr>
+<td><code class="prettyprint">response</code></td>
+<td style="text-align: center"></td>
+<td>object</td>
+<td>An optional response message</td>
+</tr>
+<tr>
+<td><code class="prettyprint">error</code></td>
+<td style="text-align: center"></td>
+<td>object</td>
+<td>See <a href="#error-message">error</a> for more info</td>
+</tr>
+</tbody></table>
 
 <h3 id="auth-message"><code class="prettyprint">auth</code> message</h3>
 
@@ -190,6 +276,7 @@ originating user.</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auth"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"71TplPdS"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"authorization"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Session &lt;session id&gt;"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
@@ -224,7 +311,27 @@ connection with the server. The <code class="prettyprint">&lt;session id&gt;</co
 <td><code class="prettyprint">resource</code></td>
 <td style="text-align: center"></td>
 <td>string</td>
-<td>Unique value to identify the connection</td>
+<td>Unique value to identify the connection, appended to the JID</td>
+</tr>
+</tbody></table>
+
+<p>Note that the <code class="prettyprint">resource</code></p>
+
+<h4 id="response-properties"><code class="prettyprint">response</code> properties</h4>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center">Req</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">jid</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>The full JID for the session</td>
 </tr>
 </tbody></table>
 
@@ -283,6 +390,24 @@ delivered to a team chat room.</p>
 </tr>
 </tbody></table>
 
+<h4 id="response-properties"><code class="prettyprint">response</code> Properties</h4>
+
+<table><thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center">Req</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">key</code></td>
+<td style="text-align: center">✓</td>
+<td>string</td>
+<td>Unique identifier for this message</td>
+</tr>
+</tbody></table>
+
 <h3 id="presence_change-message"><code class="prettyprint">presence_change</code> message</h3>
 
 <blockquote>
@@ -299,7 +424,7 @@ delivered to a team chat room.</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"type"</span><span class="p">:</span><span class="w">     </span><span class="s2">"presence_change"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"from"</span><span class="p">:</span><span class="w">     </span><span class="s2">"acme+edc02251076b4190830f30f48eff8266@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"from"</span><span class="p">:</span><span class="w">     </span><span class="s2">"acme+edc02251076b4190830f30f48eff8266@xmpp.ryver.com/&lt;resource&gt;"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"to"</span><span class="p">:</span><span class="w">       </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"presence"</span><span class="p">:</span><span class="w"> </span><span class="s2">"away"</span><span class="w">
 </span><span class="p">}</span><span class="w">
@@ -321,7 +446,7 @@ depending on whether this was a global or team-specific presence change.</p>
 number of <code class="prettyprint">presence_change</code> messages from the server to indicate the online
 status of all the user&rsquo;s contacts. These initial <code class="prettyprint">presence_change</code> messages will
 include a <code class="prettyprint">received</code> property, to indicate when the originating user last
-updated their presence.</p>
+updated their presence. If a user is online, the <code class="prettyprint">from</code> will contain a full JID.</p>
 
 <aside class="notice">
 Whilst connected, a client will receive a number of <code>presence_change</code>
@@ -439,52 +564,12 @@ will no longer receive any group chat messages directed to the room.</p>
 </span></code></pre>
 
 <p>The <code class="prettyprint">user_typing</code> message is sent by the client when a user starts typing. A
-client can send this message multiple times. The <code class="prettyprint">to</code> JID indicates to which user
-or team the users is typing</p>
+client can send this message multiple times. The <code class="prettyprint">to</code> JID indicates to which
+user or team the users is typing</p>
 
 <p>Clients receiving this message can show an indicator that the user is typing.
 The client would remove this indicator after a short delay or when a message is
 received.</p>
-
-<h3 id="ack-message"><code class="prettyprint">ack</code> message</h3>
-
-<blockquote>
-<p>Client:</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"acme+27053427bb9f4c448d79ef5fcb4da78c@xmpp.ryver.com"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello world"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"id"</span><span class="p">:</span><span class="w">   </span><span class="s2">"23TplPdS"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-
-<blockquote>
-<p>Server: in response to the previous message</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"type"</span><span class="p">:</span><span class="w">       </span><span class="s2">"ack"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"reply_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"message"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"reply_to"</span><span class="p">:</span><span class="w">   </span><span class="s2">"23TplPdS"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-
-<p>The <code class="prettyprint">ack</code> message is sent by the server to acknowledge a previous message sent by a
-client. A client requests interest in receiving an <code class="prettyprint">ack</code> by including an <code class="prettyprint">id</code>
-property.</p>
-
-<p>Certain messages will include a <code class="prettyprint">response</code> property, that contains additional
-data after processing. As an example, sending a <code class="prettyprint">chat</code> message will include the
-original chat with the <code class="prettyprint">key</code> to uniquely identify the message for editing or
-deleting.</p>
-
-<aside class="notice">
-Not all messages require an <code>ack</code>. A message such as
-<code>user_typing</code> can fail and there is no resulting data loss.
-</aside>
-
-<p><code class="prettyprint">id</code> should be a unique string or incrementing number; any other value is
-considered an error.</p>
 
 <h3 id="ping-message"><code class="prettyprint">ping</code> message</h3>
 
@@ -507,8 +592,8 @@ considered an error.</p>
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>The <code class="prettyprint">ping</code> message is sent by the client to check the health of the connection and
-server.</p>
+<p>The <code class="prettyprint">ping</code> message is sent by the client to check the health of the connection
+and server.</p>
 
 <aside class="notice">
 The <code>id</code> property should be included to receive an <code>ack</code>
@@ -553,10 +638,10 @@ payload.</p>
 <td>a descriptive message of the error in English</td>
 </tr>
 <tr>
-<td><code class="prettyprint">xmpp</code></td>
+<td><code class="prettyprint">data</code></td>
 <td style="text-align: center"></td>
 <td>object</td>
-<td>additional information for an XMPP-specific error</td>
+<td>additional information for a specific error code</td>
 </tr>
 </tbody></table>
 
@@ -590,14 +675,14 @@ payload.</p>
 </tr>
 <tr>
 <td><code class="prettyprint">xmpp_error</code></td>
-<td>an XMPP-specific error has occurred, see <a href="#properties-xmpp">xmpp object</a></td>
+<td>an XMPP-specific error has occurred, see <a href="#properties-xmpp_error">data object</a></td>
 </tr>
 </tbody></table>
 
-<h4 id="properties-xmpp">Properties: <code class="prettyprint">xmpp</code></h4>
+<h4 id="properties-xmpp_error">Properties: <code class="prettyprint">xmpp_error</code></h4>
 
-<p>The <code class="prettyprint">xmpp</code> property will be populated when <code class="prettyprint">error.code</code> is <code class="prettyprint">xmpp_error</code> and
-is will include details of the XMPP error per RFC-6120.</p>
+<p>When the <code class="prettyprint">error.code</code> is <code class="prettyprint">xmpp_error</code>, the <code class="prettyprint">data</code> property will include extra
+data describing the XMPP specific error per RFC-6120.</p>
 
 <aside class="notice">
 The <code>xmpp</code> object is intended to be a temporary solution until MUC is
