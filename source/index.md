@@ -1,168 +1,77 @@
 ---
-title: API Reference
-
-language_tabs:
-  - shell
-  - ruby
-  - python
+title: Ryver API Reference
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
 
 includes:
-  - errors
+  - how_tos
+  - chat
+  - events
 
 search: true
 ---
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the official Ryver API documentation. Our APIs allow 3rd parties
+to integrate to Ryver with greater flexibility than what is supported by
+services such Zapier. Ryver’s APIs are a subset of
+[OData 2.0](http://www.odata.org/documentation/odata-version-2-0/) and will be
+familiar to someone with experience using REST HTTP APIs.
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+## The Basics
 
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+The Ryver API is predominantly resource-oriented with a small number of
+RPC-style end points to perform more complex actions. [Cross-origin resource
+sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing) is supported
+to provide access to our API from web clients. [JSON](http://www.json.org) is
+returned for all resource requests.
+
+<pre class="inline"><code>
+http://host/path/odata.svc/users(1)?$top=2&$orderby=Name
+\________________________/\_______/ \__________________/
+             |                |               |
+         base path      resource path    query options
+</code></pre>
 
 # Authentication
 
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
+> To authenticate using curl:
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+curl -X POST -u user:pass "https://test.ryver.com/api/1/odata.svc/Session.Login()"
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
+> Typical response
 
 ```json
 {
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "username": "Stu",
+  "id": 75,
+  "sessionId": "develop:75:6b2e6516971b23910d75ef91b43fe7eaf3706675",
+  "instanceId": "develop",
+  "newUser": false,
+  "__descriptor": "Stuart Carnie"
 }
 ```
 
-This endpoint retrieves a specific kitten.
+A consumer must first authenticate with the Ryver API using HTTP Basic
+authentication over [HTTPS](http://en.wikipedia.org/wiki/HTTP_Secure), by
+calling the `/api/1/odata.svc/Session.Login()` API.
 
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
+<aside class="notice">
+Upon successful verification of credentials, the server will respond with
+information about the authenticated user, including a <code>sessionId</code>
+that should be used in subsequent requests.
+</aside>
 
-### HTTP Request
+The `sessionId` should be paired with a header named `Contatta-Session` as
+follows
 
-`GET http://example.com/kittens/<ID>`
+> Using the `Contatta-Session` header
 
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
+```shell
+curl "http://develop.contatta.vm/api/1/odata.svc/Session.GetCurrentUser()" \
+     -H "Contatta-Session: develop:75:6b2e6516971b23910d75ef91b43fe7eaf3706675"
+```
